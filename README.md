@@ -8,9 +8,6 @@ To use the code, please cite:
 
 The operating system for developing this code repo is Ubuntu 16.04, but it should also be able to run in other environments. The Python version used for developing this code repo is Python 3.6.
 
-Los Angeles County         |  San Mateo County
-:-------------------------:|:-------------------------:
-![](https://opendatasharing.s3.us-west-2.amazonaws.com/DeepSolar2/images/temlapse_LosAngeles.gif)  |  ![](https://opendatasharing.s3.us-west-2.amazonaws.com/DeepSolar2/images/temlapse_SanMateo.gif)
 
 ## Install required packages
 

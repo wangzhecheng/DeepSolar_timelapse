@@ -8,6 +8,10 @@ To use the code, please cite:
 
 The operating system for developing this code repo is Ubuntu 16.04, but it should also be able to run in other environments. The Python version used for developing this code repo is Python 3.6.
 
+Los Angeles County         |  San Mateo County
+:-------------------------:|:-------------------------:
+![](https://opendatasharing.s3.us-west-2.amazonaws.com/DeepSolar2/images/temlapse_LosAngeles.gif)  |  ![](https://opendatasharing.s3.us-west-2.amazonaws.com/DeepSolar2/images/temlapse_SanMateo.gif)
+
 ## Install required packages
 
 Run the following command line:
@@ -59,7 +63,7 @@ For training the LR model with hyperparameter search:
 $ python hp_search_LR_rgb.py
 ```
 
-### Part 2: deploying model to predict installation year
+### Part 2: deploying models to predict installation year
 
 For each solar installation, we can retrieve a sequence of images captured in different years at its location and put them in the same folder. The images are named as `{image_capture_year}_{auxiliary_index}.png`. For example, if there are three images captured in 2012, they are named as `2012_0.png`, `2012_1.png`, and `2012_2.png`, respectively. 
 

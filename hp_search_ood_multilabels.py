@@ -30,103 +30,66 @@ from torch.nn import functional as F
 from torchvision.models import Inception3, resnet18, resnet34, resnet50
 
 from utils.image_dataset import *
-# from LR_models.couple_model import *
-# from LR_models.siamese_model_binary import *
 from LR_models.siamese_model_rgb import *
+
+"""
+This script is for training blur detection model that classifies an image
+into three classes: OOD (out of distribution, extremely blurred), HR (high
+resolution), LR (low resolution). It is a single-branch CNN based on 
+ResNet-50 model. The hyperparameters to search include learning rate, 
+learning rate decay epochs, and weight decay.
+"""
 
 # Configuration
 # directory for loading training/validation/test data
+# for each of "train"/"val"/"test", put the image folders of class "OOD" to the first 
+# list, put the image folders of class "LR" to the second list, and put image folders 
+# of class "HR" to the third list.
+
 dirs_list_dict = {
     'train':
     [[
-        '/home/ubuntu/projects/data/deepsolar2/ood/HR_2_train_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/HR_2_train_1_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_1_train_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_1_train_1_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_2_train_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_2_train_1_ood',
-        # '/home/ubuntu/projects/data/deepsolar2/ood/synthetic_HR_1_train_0',
-        # '/home/ubuntu/projects/data/deepsolar2/ood/synthetic_HR_1_train_1',
-        # '/home/ubuntu/projects/data/deepsolar2/ood/synthetic_HR_2_train_0',
-        # '/home/ubuntu/projects/data/deepsolar2/ood/synthetic_HR_2_train_1'
+        'data/blur_detection_images/train/OOD',
     ],
      [
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/train/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/train/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/train/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/train/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/train/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/train/1',
+        'data/blur_detection_images/train/LR',
     ],
      [
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/train/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/train/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_2/train/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_2/train/1'
+        'data/blur_detection_images/train/HR',
     ]],
     'val':
     [[
-        '/home/ubuntu/projects/data/deepsolar2/ood/HR_2_val_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/HR_2_val_1_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_1_val_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_1_val_1_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_2_val_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_2_val_1_ood',
+        'data/blur_detection_images/val/OOD',
     ],
      [
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/val/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/val/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/val/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/val/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/val/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/val/1',
-     ],
-      [
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/val/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/val/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_2/val/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_2/val/1'
+        'data/blur_detection_images/val/LR',
+    ],
+     [
+        'data/blur_detection_images/val/HR',
     ]],
     'test':
     [[
-        '/home/ubuntu/projects/data/deepsolar2/ood/HR_2_test_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/HR_2_test_1_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_1_test_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_1_test_1_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_2_test_0_ood',
-        '/home/ubuntu/projects/data/deepsolar2/ood/LR_2_test_1_ood',
+        'data/blur_detection_images/test/OOD',
     ],
      [
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/test/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/test/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/test/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/test/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/test/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/test/1',
-     ],
+        'data/blur_detection_images/test/LR',
+    ],
      [
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/test/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/test/1',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_2/test/0',
-        '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_2/test/1'
-    ]]
+        'data/blur_detection_images/test/HR',
+    ]],
 }
 
-# path to load old model/checkpoint, "None" if not loading.
-# old_ckpt_path = None
 old_ckpt_path_dict = {
-    'resnet18': '/home/ubuntu/projects/DeepSolarII/checkpoint/resnet18-5c106cde.pth',
-    'resnet34': '/home/ubuntu/projects/historical_solar/checkpoint/resnet34-333f7ec4.pth',
-    'resnet50': '/home/ubuntu/projects/historical_solar/checkpoint/resnet50-19c8e357.pth',
-    'inception': '/home/ubuntu/projects/historical_solar/checkpoint/inception_v3_google-1a9a5a14.pth'
+    'resnet34': 'checkpoint/resnet34-333f7ec4.pth',
+    'resnet50': 'checkpoint/resnet50-19c8e357.pth',
 }
 # directory for saving model/checkpoint
-ckpt_save_dir = 'checkpoint/ood/ood_all_LR_012_HR_12_resnet50_multilabels_change_overall_metrics'
+ckpt_save_dir = 'checkpoint/ood_new_model'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model_arch = 'resnet50'
 nclasses = 2
-old_ckpt_path = old_ckpt_path_dict[model_arch]
+old_ckpt_path = old_ckpt_path_dict[model_arch] # path to load old model/checkpoint, set it to None if not loading
 trainable_params = None     # layers or modules set to be trainable. "None" if training all layers
 model_name = 'ood'          # the prefix of the filename for saving model/checkpoint
 return_best = True           # whether to return the best model according to the validation metrics
@@ -142,12 +105,12 @@ lr_decay_rate = 0.95           # learning rate decay rate for each decay step
 early_stop_epochs = 10        # after validation metrics doesn't improve for "early_stop_epochs" epochs, stop the training.
 save_epochs = 50              # save the model/checkpoint every "save_epochs" epochs
 # threshold = 0.2               # threshold probability to identify am image as positive
-ib1 = 1
-lr_list = [0.00001, 0.0001, 0.001]
-lr_decay_epochs_list = [10, 4]
-weight_decay_list = [0, 0.001]
-# ib1_list = [1, 0.5, 0.2]
-# ib3_list = [1, 3]
+ib1 = 1 # weight for imbalance class 
+
+# hyperparamters to tune
+lr_list = [0.00001, 0.0001, 0.001] # learning rates
+lr_decay_epochs_list = [10, 4] # learning rate decay epochs
+weight_decay_list = [0, 0.001] # weight decay
 threshold_list = np.linspace(0.0, 1.0, 101).tolist()
 
 

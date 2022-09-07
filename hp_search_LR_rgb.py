@@ -30,49 +30,46 @@ from torch.nn import functional as F
 from torchvision.models import Inception3
 
 from utils.image_dataset import *
-# from LR_models.couple_model import *
-# from LR_models.siamese_model_binary import *
 from LR_models.siamese_model_rgb import *
+
+"""
+This script is for training solar panel classification model for low-resolution (LR)
+images. The model is a pseudo-Siamese network that takes one target image and one 
+reference image as inputs and predicts whether the reference image contains solar 
+or not. The hyperparameters to search include the depth of convolutional layers, 
+number of convolutional layers, and number of filters.
+"""
 
 # Configuration
 # directory for loading training/validation/test data
 data_dirs_dict = {
-    'train': ['/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/train',
-              '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/train',
-              '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/train'],
-    'val': ['/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/val',
-            '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/val',
-            '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/val'],
-    'test': ['/home/ubuntu/projects/data/deepsolar2/cleaned/LR_0/test',
-             '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_1/test',
-             '/home/ubuntu/projects/data/deepsolar2/cleaned/LR_2/test'],
+    'train': ['data/LR_images/train'],
+    'val': ['data/LR_images/val'],
+    'test': ['data/LR_images/test'],
 }
 
+# each pickle file is a dict mapping a relative path of target image to 
+# a list of relative paths of its corresponding reference images.
+# The length of the path list under each subset should match the length
+# of each subset of data_dirs_dict. E.g., len(data_dirs_dict['train'])
+# must be equal to len(reference_mapping_paths_dict['train'])
 reference_mapping_paths_dict = {
-    'train': ['/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_0.pickle',
-              '/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_1.pickle',
-              '/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_2.pickle'],
-    'val': ['/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_0.pickle',
-            '/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_1_single.pickle',
-            '/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_2_single.pickle'],
-    'test': ['/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_0.pickle',
-             '/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_1_single.pickle',
-             '/home/ubuntu/projects/data_preparation/reference_mapping/reference_mapping_LR_2_single.pickle']
+    'train': ['data/LR_images/train/reference_mapping_train.pickle'],
+    'val': ['data/LR_images/val/reference_mapping_val.pickle'],
+    'test': ['data/LR_images/test/reference_mapping_test.pickle']
 }
 
-# path to load old model/checkpoint, "None" if not loading.
-# old_ckpt_path = None
+# paths to load old model/checkpoint.
 old_ckpt_path_dict = {
-    'resnet18': '/home/ubuntu/projects/DeepSolarII/checkpoint/resnet18-5c106cde.pth',
-    'resnet34': '/home/ubuntu/projects/historical_solar/checkpoint/resnet34-333f7ec4.pth',
-    'resnet50': '/home/ubuntu/projects/historical_solar/checkpoint/resnet50-19c8e357.pth'
+    'resnet34': 'checkpoint/resnet34-333f7ec4.pth',
+    'resnet50': 'checkpoint/resnet50-19c8e357.pth',
 }
 # directory for saving model/checkpoint
-ckpt_save_dir = 'checkpoint/LR_rgb/LR_012_res34_dwcc_tr_nomask_l234_augmented_2'
+ckpt_save_dir = 'checkpoint/LR_new_model'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 backbone = 'resnet34'
-old_ckpt_path = old_ckpt_path_dict[backbone]
+old_ckpt_path = old_ckpt_path_dict[backbone] # set it to be None if not loading any.
 trainable_params = None     # layers or modules set to be trainable. "None" if training all layers
 model_name = 'LR'  # the prefix of the filename for saving model/checkpoint
 return_best = True           # whether to return the best model according to the validation metrics
@@ -92,6 +89,8 @@ save_epochs = 50              # save the model/checkpoint every "save_epochs" ep
 # nfilters = 256
 # lr_list = [0.0001]
 # lr_decay_epochs_list = [10, 4]
+
+# The hyperparameters to search
 depth_list = [128]
 nconvs_list = [3, 2]
 nfilters_list = [512, 384, 256]
@@ -107,9 +106,9 @@ def RandomRotationNew(image):
 
 def mask_image_info(img):
     img = np.array(img)
-    img[0:18, 0:95] = 0        # time axis
-    img[289:298, 0:299] = 0    # image date
-    # img[256:263, 122:202] = 0  # image source info
+    img[0:18, 0:95] = 0
+    img[289:298, 0:299] = 0
+    # img[256:263, 122:202] = 0
     img = Image.fromarray(img)
     return img
 
@@ -360,7 +359,6 @@ if __name__ == '__main__':
                       str(depth) + ', ' +
                       str(nfilters) +
                       ' -----------------------')
-                # model = naive_model()
                 model = psn_depthwise_cc_layerwise_3layers_l234(backbone=backbone, nconvs=nconvs, depth=depth, nfilters=nfilters,
                                                                 kernel_size=3)
                 optimizer = optim.Adam(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-08,

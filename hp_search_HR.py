@@ -31,21 +31,24 @@ from torchvision.models import Inception3
 
 from utils.image_dataset import BinaryImageFolder
 
+"""
+This script is for training solar panel classification model with high-resolution (HR) 
+image input. It is a single-branch CNN based on Inception v3 model. The hyperparameters
+to search include learning rate and learning rate decay epochs.
+"""
 
 # Configuration
 # directory for loading training/validation/test data
 data_dirs_dict = {
-    'train': ['/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/train'],
-    'val': ['/home/ubuntu/projects/data/deepsolar2/cleaned/HR_1/val',
-            '/home/ubuntu/projects/data/deepsolar2/cleaned/HR_2/val']
+    'train': ['data/HR_images/train'],
+    'val': ['data/HR_images/val']
 }
 
 
 # path to load old model/checkpoint, "None" if not loading.
-old_ckpt_path = 'checkpoint/deepsolar_pretrained.pth'
-# old_ckpt_path = '/home/ubuntu/projects/TorchModelZoo/checkpoints/inception_v3_google-1a9a5a14.pth'
+old_ckpt_path = None
 # directory for saving model/checkpoint
-ckpt_save_dir = 'checkpoint/HR/HR_1_ft_all_hp_search'
+ckpt_save_dir = 'checkpoint/HR_new_model'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 trainable_params = None     # layers or modules set to be trainable. "None" if training all layers
@@ -63,9 +66,11 @@ lr_decay_rate = 0.5           # learning rate decay rate for each decay step
 early_stop_epochs = 10        # after validation metrics doesn't improve for "early_stop_epochs" epochs, stop the training.
 save_epochs = 10              # save the model/checkpoint every "save_epochs" epochs
 # threshold = 0.2               # threshold probability to identify am image as positive
-lr_list = [0.0001, 0.001, 0.00001]
-lr_decay_epochs_list = [10]
 threshold_list = np.linspace(0.0, 1.0, 101)
+
+# hyperparamters to tune
+lr_list = [0.0001, 0.001, 0.00001] # learning rate
+lr_decay_epochs_list = [10] # learning rate decay epochs
 
 
 def RandomRotationNew(image):

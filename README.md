@@ -61,6 +61,8 @@ For training the LR model with hyperparameter search:
 $ python hp_search_LR_rgb.py
 ```
 
+By default, all three scripts above are run on a machine with GPU.
+
 ### Part 2: deploying models to predict installation year
 
 For each solar installation, we can retrieve a sequence of images captured in different years at its location and put them in the same folder. The images are named as `{image_capture_year}_{auxiliary_index}.png`. For example, if there are three images captured in 2012, they are named as `2012_0.png`, `2012_1.png`, and `2012_2.png`, respectively. 
@@ -85,6 +87,8 @@ Then, deploy the LR model to image sequences:
 ```
 $ python predict_LR_rgb.py
 ```
+
+By default, all three `.py` scripts above are run on a machine with GPU.
 
 Finally, run the code blocks in this Jupyter Notebook that combines all model prediction outputs to predict the installation year for each solar PV system:
 

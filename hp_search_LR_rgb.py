@@ -10,13 +10,12 @@ import torchvision.transforms.functional as TF
 
 from tqdm import tqdm
 import numpy as np
-import json
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
-import skimage
-import skimage.io
-import skimage.transform
+# import skimage
+# import skimage.io
+# import skimage.transform
 from PIL import Image
 import time
 import os

@@ -9,7 +9,6 @@ from torchvision import datasets, models, transforms, utils
 import torchvision.transforms.functional as TF
 
 import numpy as np
-import json
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt

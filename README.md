@@ -17,7 +17,8 @@ Run the following command line:
 $ pip install -r requirements.txt
 ```
 
-**Note**: multi-variate OLS and logit regressions are run by the R code blocks inserted in the Python Jupyter Notework `bass_model_parameter_regression.ipynb`. It is based on the `rpy2` package. For further details, see [this](https://stackoverflow.com/questions/39008069/r-and-python-in-one-jupyter-notebook).
+**Note**: multi-variate OLS and logit regressions are run by the R code blocks inserted in the Python Jupyter Notework `bass_model_parameter_regression.ipynb`. It is based on the `rpy2` package. `lmtest` and `sandwich` are required libraries for R (which may need to be installed). 
+For further details about using R in Python notebook, see [this](https://stackoverflow.com/questions/39008069/r-and-python-in-one-jupyter-notebook).
 
 ## Download data and model checkpoints
 
@@ -37,7 +38,7 @@ DeepSolar_timelapse/data/...
 DeepSolar_timelapse/results/...
 ```
 
-**Note 1**: for the satellite/aerial imagery datasets under `data` directory (subdirectory `HR_images` for high-resolution (HR) images, `LR_images` for low-resolution (LR) images,  `blur_detection_images` for blur detection images, and `sequences` for image sequences), due to the restriction of imagery data sources, we are not able to publicly share the full data. Instead, for each subset (training/validation/test) and each class (e.g., positive/negative), we share two example images as a demo. For the image sequence dataset (`sequences`), we share two demo sequences where each image sequence contains satellite/aerial images captured in different years at the same location of a solar installation (image file name examples: `2006_0.png`, `2007_0.png`, `2007_1.png`, `2008_0.png`, etc). Users can put their own data under these directories.
+**Note 1**: for the satellite/aerial imagery datasets under `data` directory (subdirectory `HR_images` for high-resolution (HR) images, `LR_images` for low-resolution (LR) images,  `blur_detection_images` for blur detection images, and `sequences` for image sequences), due to the restriction of imagery data sources, we are not able to publicly share the full data. Instead, for each subset (training/validation/test) and each class (e.g., positive/negative), we share two example images as a demo. For the image sequence dataset (`sequences`), we share one demo sequence (`sequences/demo_sequences/1`). Each image sequence contains satellite/aerial images captured in different years at the same location of a solar installation (image file name examples: `2006_0.png`, `2007_0.png`, `2007_1.png`, `2008_0.png`, etc). Users can put their own data under these directories.
 
 **Note 2**: to run Jupyter Notebook, the default kernel/environment is "conda_tensorflow_p36", which does not necessarily exist in your computer. Please change the kernel to the one where all required packages are installed.
 
@@ -82,7 +83,7 @@ generate_anchor_image_dict.ipynb
 
 Then, deploy the LR model to image sequences:
 ```
-generate_anchor_image_dict.ipynb
+$ python predict_LR_rgb.py
 ```
 
 Finally, run the code blocks in this Jupyter Notebook that combines all model prediction outputs to predict the installation year for each solar PV system:
@@ -105,11 +106,5 @@ Then we can use two Jupyter Notebook to analyze the Bass model parameters that h
 
 `bass_model_parameter_phase_analysis.ipynb`: Based on the fitted Bass model parameters, segment each solar adoption trajectory into four phases: pre-diffusion, ramp-up, ramp-down, and saturation, and analyze the fractions of block groups in each phase.
 
-`bass_model_parameter_regression.ipynb`: Run multi-variate regressions with various Bass model parameters as dependent variables and socioconomic characteristics (demographics, PV benefit, the presence of incentives, etc) as independent variables. R code blocks are inserted for running these regressions.
-
-
-
-
-
-
+`bass_model_parameter_regression.ipynb`: Run multivariate regressions with various Bass model parameters as dependent variables and socioconomic characteristics (demographics, PV benefit, the presence of incentives, etc) as independent variables. R code blocks are inserted for running these regressions.
 

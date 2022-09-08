@@ -17,8 +17,8 @@ Run the following command line:
 $ pip install -r requirements.txt
 ```
 
-**Note**: multi-variate OLS and logit regressions are run by the R code blocks inserted in the Python Jupyter Notework `bass_model_parameter_regression.ipynb`. It is based on the `rpy2` package. `lmtest` and `sandwich` are required libraries for R (which may need to be installed). 
-For further details about using R in Python notebook, see [this](https://stackoverflow.com/questions/39008069/r-and-python-in-one-jupyter-notebook).
+**Note**: multivariate OLS and logit regressions are run by the R code blocks inserted in the Python Jupyter Notework `bass_model_parameter_regression.ipynb`. It is based on the `rpy2` package. If you want to run these regressions, R and R kernel are required to install. Moreover, `lmtest` and `sandwich` are required libraries for R (which may need to be installed). 
+For further details about installing R and R kernel, see this [tutorial](https://linuxize.com/post/how-to-install-r-on-ubuntu-20-04/) and this [tutorial](https://datatofish.com/r-jupyter-notebook/). For further details about using R in Python notebook, see [this](https://stackoverflow.com/questions/39008069/r-and-python-in-one-jupyter-notebook).
 
 ## Download data and model checkpoints
 

@@ -2,12 +2,23 @@
 
 A deep learning framework to detect solar PV installations from historical satellite/aerial images and predict the installation year of PV. The model is applied to different places across the U.S. for uncovering solar adoption trajectories across time. The heterogeneity in solar adoption trajectories is further analyzed from the perspective of technology diffusion model.
 
-To use the code, please cite:
+To use the code, please cite the [paper](https://www.cell.com/joule/pdf/S2542-4351(22)00477-9.pdf):
 
-* Wang, Z., Arlt, M. L., Zanocco, C., Majumdar, A., & Rajagopal, R. (2022). DeepSolar++: Understanding Residential Solar Adoption Trajectories with Machine Learning and Technology Diffusion Model. To appear in Joule.
+* Wang, Z., Arlt, M. L., Zanocco, C., Majumdar, A., & Rajagopal, R. (2022). DeepSolar++: Understanding residential solar adoption trajectories with computer vision and technology diffusion models. Joule, 6(11), 2611-2625. DOI: https://doi.org/10.1016/j.joule.2022.09.011
 
 The operating system for developing this code repo is Ubuntu 16.04, but it should also be able to run in other environments. The Python version used for developing this code repo is Python 3.6.
 
+## Public data access
+
+The census-block-group level time-series residential solar installation dataset can be accessed here:
+
+* 420 counties (which are analyzed in the [DeepSolar++](https://www.cell.com/joule/pdf/S2542-4351(22)00477-9.pdf) paper): [CSV file data downloading link](https://opendatasharing.s3.us-west-2.amazonaws.com/DeepSolar2/data/residential_solar_installations_panel_data_420counties.csv)
+
+* All counties in the contiguous US: to be added soon.
+
+In the CSV file, each census block group is corresponding to a row identified by its FIPS code (column 'blockgroup_FIPS'). Foe each block group, the table contains its cumulative number of residential PV installations in each year from 2005 to 2017, average GHI, building count, and ACS demographic data.
+
+For the installation information from 2017 to 2022, we are still working on updating the data using the same methodology and will release it at some time point in 2023. 
 
 ## Install required packages
 

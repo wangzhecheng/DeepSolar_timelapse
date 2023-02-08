@@ -14,7 +14,7 @@ The census-block-group level time-series residential solar installation dataset 
 
 * 420 counties (which are analyzed in the [DeepSolar++](https://www.cell.com/joule/pdf/S2542-4351(22)00477-9.pdf) paper): [CSV file data downloading link](https://opendatasharing.s3.us-west-2.amazonaws.com/DeepSolar2/data/residential_solar_installations_panel_data_420counties.csv)
 
-* All counties in the contiguous US: to be added soon.
+* All counties in the contiguous US: [CSV file data downloading link](https://opendatasharing.s3.us-west-2.amazonaws.com/DeepSolar2/data/residential_solar_installations_panel_data_contiguous_US.csv).
 
 In the CSV file, each census block group is corresponding to a row identified by its FIPS code (column 'blockgroup_FIPS'). Foe each block group, the table contains its cumulative number of residential PV installations in each year from 2005 to 2017, average GHI, building count, and ACS demographic data.
 
